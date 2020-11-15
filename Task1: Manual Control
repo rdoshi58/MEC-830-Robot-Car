@@ -1,3 +1,58 @@
-Testing
-Testing 2 
-Testing 3
+//SERVO MOTOR IR TESTING
+
+
+#include "IRremote.h"
+#include<Servo.h>
+
+#define Button_1 0xFF629D
+#define Button_2 0xFFA857
+int speedPin=5;
+int dir1=4;
+int dir2=3;
+int mSpeed=255;
+int nSpeed=0;
+
+int servoPin=9;
+int servoPos=90;
+Servo myservo;
+uint32_t Previous;
+
+int receiver = 13; 
+
+IRrecv irrecv(receiver);     
+decode_results results;    
+
+void setup()
+{
+  Serial.begin(9600);
+  irrecv.enableIRIn(); // Start the receiver
+  pinMode(speedPin, OUTPUT);
+  pinMode(dir1, OUTPUT);
+  pinMode(dir2, OUTPUT);
+  myservo.attach(servoPin);
+}
+
+void loop() 
+{
+ 
+ myservo.write(servoPos);
+ delay(500); 
+if (irrecv.decode(&results)) 
+    {
+      irrecv.resume();   // Receive the next value
+    }
+
+  if (results.value==0xFF22DD)
+  {
+   servoPos=servoPos+45;
+   Serial.print(servoPos);
+   myservo.write(servoPos);
+  }
+
+ else  {
+ digitalWrite(dir1, HIGH);
+ digitalWrite(dir2, LOW);
+ analogWrite(speedPin,nSpeed);
+ delay(1000);
+ }
+}
